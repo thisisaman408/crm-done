@@ -1,0 +1,63 @@
+================================================================
+          RESYL ENTERPRISE CRM - PRICING & COST ESTIMATE
+================================================================
+
+1. ENTERPRISE SOFTWARE SUBSCRIPTION (Billed by Us)
+----------------------------------------------------------------
+This is the fixed monthly license for the Resyl CRM platform, 
+which includes full access to the Director Dashboard, Sales 
+Pipelines, Inventory Management, and AI Marketing Hub.
+
+- Base Platform License (Up to 10 Users):    $999 / month 
+- Additional Sales Executives:               $49 / user / month
+- Cloud Hosting & Maintenance:               Included
+- 24/7 Technical Support:                    Included
+
+*Note: The platform fee is fixed, ensuring your core software 
+costs never unexpectedly scale up.*
+
+
+2. AI & TELEPHONY USAGE (Billed Directly on Actuals)
+----------------------------------------------------------------
+To ensure 100% transparency and wholesale pricing, the AI and 
+telecom usage is billed directly to your company by the actual 
+providers (Meta, Groq, Twilio). You only pay for what you use.
+
+Below are the estimated costs based on a high-volume real estate 
+campaign (10,000 WhatsApp chats & 1,000 AI voice minutes):
+
+A. WhatsApp Business API (Meta)
+   - Cost: ~$0.01 (₹0.80) per marketing conversation.
+   - Est. for 10,000 conversations:          ~$100 / month
+
+B. AI Text Intelligence (Groq Engine)
+   - Powers the WhatsApp Chatbot and Lead Scoring.
+   - Cost: $0.05 per 1 Million tokens.
+   - Est. for heavy 24/7 monthly usage:      ~$5 / month
+
+C. AI Voice Receptionist & Auto-Dialer (Vapi + Twilio)
+   - The AI acts as your 24/7 Voice Receptionist.
+   - AI Engine: ~$0.05 to $0.10 per minute of talk time.
+   - Phone Line: ~$0.01 per minute.
+   - Est. for 1,000 minutes (16+ hours):     ~$110 / month
+
+----------------------------------------------------------------
+TOTAL ESTIMATED USAGE (VARIABLE):            ~$215 / month
+----------------------------------------------------------------
+
+
+================================================================
+MONTHLY SUMMARY
+================================================================
+1. Resyl CRM License:                        $999 / month
+2. Estimated AI / WhatsApp Usage:            $215 / month
+----------------------------------------------------------------
+Total Estimated Monthly Investment:          $1,214 / month
+================================================================
+
+BUSINESS ROI HIGHLIGHT: 
+At ~$1,200/month, this system acts as a 24/7 automated pre-sales 
+department. It handles instant responses to Meta Ads, eliminates 
+dropped leads from missed calls at midnight, and aggressively 
+follows up to book site visits—doing the work of 3 to 4 human 
+executives at a fraction of the cost, with zero downtime.
