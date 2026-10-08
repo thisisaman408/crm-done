@@ -8,27 +8,31 @@ Template Name: CRMS - Bootstrap Admin Template
     "use strict";
 
 	// Variables declarations
-	const wrapper = document.querySelector('.main-wrapper');
-	const overlay = document.createElement('div');
-	overlay.className = 'sidebar-overlay';
-	if (wrapper) {
-		wrapper.parentNode.insertBefore(overlay, wrapper);
-	}
+	let overlay = document.querySelector('.sidebar-overlay');
 
 	// Toggle Mobile Menu
 	document.addEventListener('click', function (e) {
 		if (!e.target.closest('#mobile_btn')) return;
 		e.preventDefault();
-		wrapper.classList.toggle('slide-nav');
-		overlay.classList.toggle('opened');
+		const currentWrapper = document.querySelector('.main-wrapper');
+		if (!overlay) {
+			overlay = document.createElement('div');
+			overlay.className = 'sidebar-overlay';
+			if (currentWrapper) currentWrapper.appendChild(overlay);
+		}
+		if (currentWrapper) {
+			currentWrapper.classList.toggle('slide-nav');
+			overlay.classList.toggle('opened');
+		}
 		document.documentElement.classList.toggle('menu-opened');
 	});
 
 	// Close sidebar on close button click
 	document.addEventListener('click', function (e) {
 		if (!e.target.closest('.sidebar-close, .sidebar-overlay')) return;
-		wrapper.classList.remove('slide-nav');
-		overlay.classList.remove('opened');
+		const currentWrapper = document.querySelector('.main-wrapper');
+		if (currentWrapper) currentWrapper.classList.remove('slide-nav');
+		if (overlay) overlay.classList.remove('opened');
 		document.documentElement.classList.remove('menu-opened');
 	});
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 
 const getDashboardConfig = (roleCode) => {
@@ -6,28 +7,39 @@ const getDashboardConfig = (roleCode) => {
         case 'SALES_EXECUTIVE': return { endpoint: '/api/dashboard/sales-executive/analytics', title: 'Sales Executive Dashboard' };
         case 'PRE_SALES_MANAGER': return { endpoint: '/api/dashboard/pre-sales-manager/analytics', title: 'Pre-Sales Manager Dashboard' };
         case 'POST_SALES_MANAGER': return { endpoint: '/api/dashboard/post-sales-manager/analytics', title: 'Post-Sales Manager Dashboard' };
-        case 'DIRECTOR': return { endpoint: '/api/dashboard/business-manager/analytics', title: 'Director Dashboard' };
+        case 'DIRECTOR': 
+        case 'ADMIN': return { endpoint: '/api/dashboard/business-manager/analytics', title: 'Director Dashboard' };
         case 'PRE_SALES': return { endpoint: '/api/dashboard/pre-sales/analytics', title: 'Pre-Sales Dashboard' };
         default: return { endpoint: '/api/dashboard/sales-manager/analytics', title: 'Sales Manager Dashboard' }; // default for Admin and Manager
     }
 };
 
 const Dashboard = () => {
+    const navigate = useNavigate();
     const [analytics, setAnalytics] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [timeRange, setTimeRange] = useState('monthly');
-    const [config, setConfig] = useState({ endpoint: '/api/dashboard/sales-manager/analytics', title: 'Sales Manager Dashboard' });
-
-    useEffect(() => {
+    
+    const timeLabels = {
+        'weekly': 'Last 7 Days',
+        'monthly': 'Last 30 Days',
+        'yearly': 'Last 1 Year',
+        'all-time': 'All Time'
+    };
+    const timeLabel = timeLabels[timeRange] || 'selected period';
+    
+    // Initialize config directly to prevent double fetch flicker
+    const [config, setConfig] = useState(() => {
         const userJson = localStorage.getItem('user');
         if (userJson) {
             try {
                 const user = JSON.parse(userJson);
-                setConfig(getDashboardConfig(user.roleCode));
+                return getDashboardConfig(user.roleCode);
             } catch (e) {}
         }
-    }, []);
+        return { endpoint: '/api/dashboard/sales-manager/analytics', title: 'Sales Manager Dashboard' };
+    });
 
     useEffect(() => {
         const fetchAnalytics = async () => {
@@ -65,8 +77,55 @@ const Dashboard = () => {
     }
 
     const detailedMetrics = analytics.detailedMetrics || analytics;
-    const salesFunnel = detailedMetrics.salesFunnel || { assignedCustomers: 0, opportunities: 0, closedWon: 0, conversionRate: 0 };
-    const revenueAnalytics = detailedMetrics.revenueAnalytics || { currentRevenue: 0, revenueGrowth: 0, avgDealSize: 0 };
+    
+    const isPreSales = !!analytics.pipeline;
+    const isDirector = !!analytics.leadPipeline;
+    
+    let directorTotalLeads = 0;
+    let directorSiteVisits = 0;
+    let directorBooked = 0;
+    let directorNegotiation = 0;
+    
+    if (isDirector) {
+        ['brokerage', 'cp'].forEach(type => {
+            const pipe = analytics.leadPipeline[type] || {};
+            directorTotalLeads += Object.values(pipe).reduce((a, b) => a + Number(b || 0), 0);
+            directorSiteVisits += Number(pipe.SITE_VISIT_SCHEDULED || 0);
+            directorBooked += Number(pipe.BOOKING || 0);
+            directorNegotiation += Number(pipe.NEGOTIATION || 0);
+        });
+    }
+
+    const salesFunnel = detailedMetrics.salesFunnel || (isPreSales ? {
+        assignedCustomers: analytics.pipeline.totalLeads || 0,
+        siteVisitsCompleted: analytics.pipeline.visitCompleted || 0,
+        siteVisitsScheduled: analytics.pipeline.visitScheduled || 0,
+        confirmedBookings: analytics.pipeline.booked || 0,
+        conversionRate: analytics.conversions?.leadToSiteVisitPercentage || 0,
+        negotiations: analytics.pipeline.qualified || 0,
+    } : isDirector ? {
+        assignedCustomers: directorTotalLeads,
+        siteVisitsCompleted: 0, 
+        siteVisitsScheduled: directorSiteVisits,
+        confirmedBookings: directorBooked,
+        conversionRate: 0,
+        negotiations: directorNegotiation,
+    } : { 
+        assignedCustomers: 0, opportunities: 0, closedWon: 0, conversionRate: 0, 
+        siteVisitsCompleted: 0, siteVisitsScheduled: 0, confirmedBookings: 0, negotiations: 0 
+    });
+
+    let adminTotalRevenue = 0;
+    if (isDirector && analytics.expenseRevenueTrend) {
+        adminTotalRevenue = analytics.expenseRevenueTrend.reduce((acc, curr) => acc + (curr.revenue || 0), 0);
+    }
+
+    const revenueAnalytics = detailedMetrics.revenueAnalytics || (isDirector ? {
+        currentRevenue: adminTotalRevenue,
+        revenueGrowth: 0,
+        avgDealSize: 0,
+        monthly: 0
+    } : { currentRevenue: 0, revenueGrowth: 0, avgDealSize: 0, monthly: 0 });
 
     return (
         <div className="content">
@@ -104,13 +163,18 @@ const Dashboard = () => {
             <div className="row row-gap-3 mb-4">
                 {/* Total Leads */}
                 <div className="col-xl-3 col-sm-6 d-flex">
-                    <div className="card flex-fill mb-0 position-relative overflow-hidden">
+                    <div 
+                        className="card flex-fill mb-0 position-relative overflow-hidden" 
+                        onClick={() => navigate('/leads')}
+                        style={{ cursor: 'pointer', transition: 'transform 0.2s', ':hover': { transform: 'scale(1.02)' } }}
+                        title="View all leads"
+                    >
                         <div className="card-body position-relative z-1">
                             <div className="d-flex align-items-start justify-content-between">
                                 <div>
                                     <p className="fs-14 mb-1">Total Leads Assigned</p>
                                     <h2 className="mb-1 fs-20">{salesFunnel.assignedCustomers}</h2>
-                                    <p className="text-muted mb-0 fs-13">Active prospects</p>
+                                    <p className="text-muted mb-0 fs-13">Active in {timeLabel.toLowerCase()}</p>
                                 </div>
                                 <span className="avatar avatar-md rounded-circle bg-soft-primary border border-primary d-flex align-items-center justify-content-center">
                                     <i className="ti ti-users fs-16 text-primary"></i>
@@ -122,7 +186,12 @@ const Dashboard = () => {
 
                 {/* Site Visits */}
                 <div className="col-xl-3 col-sm-6 d-flex">
-                    <div className="card flex-fill mb-0 position-relative overflow-hidden">
+                    <div 
+                        className="card flex-fill mb-0 position-relative overflow-hidden"
+                        onClick={() => navigate('/activities')}
+                        style={{ cursor: 'pointer', transition: 'transform 0.2s', ':hover': { transform: 'scale(1.02)' } }}
+                        title="View all activities & site visits"
+                    >
                         <div className="card-body position-relative z-1">
                             <div className="d-flex align-items-start justify-content-between">
                                 <div>
@@ -140,7 +209,12 @@ const Dashboard = () => {
 
                 {/* Confirmed Bookings */}
                 <div className="col-xl-3 col-sm-6 d-flex">
-                    <div className="card flex-fill mb-0 position-relative overflow-hidden">
+                    <div 
+                        className="card flex-fill mb-0 position-relative overflow-hidden"
+                        onClick={() => navigate('/invoices')}
+                        style={{ cursor: 'pointer', transition: 'transform 0.2s', ':hover': { transform: 'scale(1.02)' } }}
+                        title="View all confirmed bookings"
+                    >
                         <div className="card-body position-relative z-1">
                             <div className="d-flex align-items-start justify-content-between">
                                 <div>
@@ -156,23 +230,30 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Total Revenue */}
+                {/* Total Revenue - Hidden for Pre-Sales */}
+                {!isPreSales && (
                 <div className="col-xl-3 col-sm-6 d-flex">
-                    <div className="card flex-fill mb-0 position-relative overflow-hidden">
+                    <div 
+                        className="card flex-fill mb-0 position-relative overflow-hidden"
+                        onClick={() => navigate('/payments')}
+                        style={{ cursor: 'pointer', transition: 'transform 0.2s', ':hover': { transform: 'scale(1.02)' } }}
+                        title="View all payments & collections"
+                    >
                         <div className="card-body position-relative z-1">
                             <div className="d-flex align-items-start justify-content-between">
                                 <div>
                                     <p className="fs-14 mb-1">Total Revenue</p>
-                                    <h2 className="mb-1 fs-20">₹{revenueAnalytics.monthly.toLocaleString()}</h2>
-                                    <p className="text-muted mb-0 fs-13">Booked in this period</p>
+                                    <h2 className="mb-1 fs-20">₹{revenueAnalytics?.currentRevenue?.toLocaleString() || '0'}</h2>
+                                    <p className="text-muted mb-0 fs-13">Booked in {timeLabel.toLowerCase()}</p>
                                 </div>
-                                <span className="avatar avatar-md rounded-circle bg-soft-danger border border-danger d-flex align-items-center justify-content-center">
-                                    <i className="ti ti-coin fs-16 text-danger"></i>
+                                <span className="avatar avatar-md rounded-circle bg-soft-success border border-success d-flex align-items-center justify-content-center">
+                                    <i className="ti ti-currency-dollar fs-16 text-success"></i>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
+                )}
             </div>
 
             {/* Sales Funnel Progress */}

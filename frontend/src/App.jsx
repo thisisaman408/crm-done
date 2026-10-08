@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import ScriptLoader from './components/ScriptLoader';
@@ -13,10 +13,13 @@ import Analytics from './pages/Analytics';
 import Chat from './pages/Chat';
 import Companies from './pages/Companies';
 import Contacts from './pages/Contacts';
+import ClientProfile from './pages/ClientProfile';
 import Contracts from './pages/Contracts';
 import Deals from './pages/Deals';
 import Estimations from './pages/Estimations';
+import ManageUsers from './pages/generated/ManageUsers';
 import ProjectDetails from './pages/generated/ProjectDetails';
+import Integrations from './pages/Integrations';
 import Invoices from './pages/Invoices';
 import Leads from './pages/Leads';
 import Payments from './pages/Payments';
@@ -25,7 +28,6 @@ import Projects from './pages/Projects';
 import Proposals from './pages/Proposals';
 import RelationshipMap from './pages/RelationshipMap';
 import Tasks from './pages/Tasks';
-import Integrations from './pages/Integrations';
 
 // Define our RBAC Roles
 const ROLES = {
@@ -36,7 +38,7 @@ const ROLES = {
   PARTNER: 'CHANNEL_PARTNER'
 };
 
-const ALL_INTERNAL = [ROLES.ADMIN, ROLES.DIRECTOR, ROLES.MANAGER, ROLES.SALES_EXEC, 'SALES_MANAGER', 'BUSINESS_MANAGER', 'PRE_SALES_MANAGER', 'POST_SALES_MANAGER'];
+const ALL_INTERNAL = [ROLES.ADMIN, ROLES.DIRECTOR, ROLES.MANAGER, ROLES.SALES_EXEC, 'SALES_MANAGER', 'BUSINESS_MANAGER', 'PRE_SALES_MANAGER', 'POST_SALES_MANAGER', 'PRE_SALES', 'POST_SALES', 'FINANCE', 'MARKETING'];
 const MANAGEMENT_ONLY = [ROLES.ADMIN, ROLES.DIRECTOR, ROLES.MANAGER, 'SALES_MANAGER', 'BUSINESS_MANAGER', 'PRE_SALES_MANAGER', 'POST_SALES_MANAGER'];
 
 function App() {
@@ -60,6 +62,7 @@ function App() {
         <Route path="/contracts" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><Contracts /></Layout></ProtectedRoute>} />
         <Route path="/estimations" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><Estimations /></Layout></ProtectedRoute>} />
         <Route path="/invoices" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><Invoices /></Layout></ProtectedRoute>} />
+        <Route path="/clients/:id" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><ClientProfile /></Layout></ProtectedRoute>} />
         <Route path="/payments" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><Payments /></Layout></ProtectedRoute>} />
         <Route path="/activities" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><Activities /></Layout></ProtectedRoute>} />
         <Route path="/chat" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><Chat /></Layout></ProtectedRoute>} />
@@ -69,8 +72,14 @@ function App() {
         {/* High Level Views - Management Only */}
         <Route path="/companies" element={<ProtectedRoute allowedRoles={MANAGEMENT_ONLY}><Layout><Companies /></Layout></ProtectedRoute>} />
         <Route path="/analytics" element={<ProtectedRoute allowedRoles={MANAGEMENT_ONLY}><Layout><Analytics /></Layout></ProtectedRoute>} />
-        <Route path="/projects" element={<ProtectedRoute allowedRoles={MANAGEMENT_ONLY}><Layout><Projects /></Layout></ProtectedRoute>} />
-        <Route path="/projects/:id" element={<ProtectedRoute allowedRoles={MANAGEMENT_ONLY}><Layout><ProjectDetails /></Layout></ProtectedRoute>} />
+        <Route path="/manage-users" element={<ProtectedRoute allowedRoles={MANAGEMENT_ONLY}><Layout><ManageUsers /></Layout></ProtectedRoute>} />
+        
+        {/* Project & Inventory - Available to all internals (filtered in backend by assignment) */}
+        <Route path="/projects" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><Projects /></Layout></ProtectedRoute>} />
+        <Route path="/projects/:id" element={<ProtectedRoute allowedRoles={ALL_INTERNAL}><Layout><ProjectDetails /></Layout></ProtectedRoute>} />
+
+        <Route path="/unauthorized" element={<div className="d-flex vh-100 align-items-center justify-content-center flex-column text-white bg-dark"><h2>401 Unauthorized</h2><p>You don't have permission to view this page.</p><a href="/" className="btn btn-primary mt-3">Go Home</a></div>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
     </BrowserRouter>

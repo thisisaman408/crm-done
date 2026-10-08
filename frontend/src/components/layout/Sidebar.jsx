@@ -116,6 +116,7 @@ const Sidebar = () => {
                                         <i className="ti ti-settings"></i><span>Integrations</span><span className="menu-arrow"></span>
                                     </a>
                                     <ul style={{ display: openMenus.settings ? 'block' : 'none' }}>
+                                        <li><Link to="/manage-users" className={isActive('/manage-users') ? 'active' : ''}>Manage Users</Link></li>
                                         <li><Link to="/integrations" className={isActive('/integrations') ? 'active' : ''}>API Integrations</Link></li>
                                     </ul>
                                 </li>

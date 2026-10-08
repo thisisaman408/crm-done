@@ -24,6 +24,8 @@ const timeAgo = (dateString) => {
 const Deals = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const [actionLoading, setActionLoading] = useState(null); // { id: string, action: string }
     const [bookings, setBookings] = useState([]);
     const [userRole, setUserRole] = useState(null);
     const [selectedRequest, setSelectedRequest] = useState(null);
@@ -76,8 +78,13 @@ const Deals = () => {
 
     const handleCreateRequest = async (e) => {
         e.preventDefault();
+        setSubmitLoading(true);
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
+        
+        if (!data.bookingId) {
+            delete data.bookingId;
+        }
         
         try {
             await api.post('/api/approvals', data);
@@ -86,7 +93,11 @@ const Deals = () => {
             fetchRequests();
         } catch (error) {
             console.error("Error creating request", error);
-            alert(`Error: ${error.response?.data?.message || error.message}`);
+            const msg = error.response?.data?.message;
+            const errorText = Array.isArray(msg) ? msg.join(', ') : (msg || error.message);
+            alert(`Error: ${errorText}`);
+        } finally {
+            setSubmitLoading(false);
         }
     };
 
@@ -291,9 +302,14 @@ const Deals = () => {
                                                                 className={`card kanban-card border shadow-sm mb-3 ${snapshot.isDragging ? 'shadow-lg border-primary' : ''}`}
                                                                 ref={provided.innerRef}
                                                                 {...provided.dragHandleProps}
-                                                                onClick={() => setSelectedRequest(req)}
-                                                                data-bs-toggle="offcanvas"
-                                                                data-bs-target="#offcanvas_view"
+                                                                onClick={() => {
+                                                                    setSelectedRequest(req);
+                                                                    const el = document.getElementById('offcanvas_view');
+                                                                    if (el && window.bootstrap) {
+                                                                        const offcanvas = window.bootstrap.Offcanvas.getOrCreateInstance(el);
+                                                                        offcanvas.show();
+                                                                    }
+                                                                }}
                                                                 style={{ cursor: 'pointer', ...provided.draggableProps.style }}
                                                             >
                                                                 <div className="card-body">
@@ -322,46 +338,89 @@ const Deals = () => {
                                                                         )}
                                                                     </div>
                                                                     
-                                                                    {/* Approve / Reject Actions for Sales Manager */}
+                                                                    {/* Approve / Reject Actions */}
                                                                     {(req.status || 'REQUESTED').toUpperCase() === 'REQUESTED' && (
                                                                         <div className="d-flex gap-2 mt-3 pt-3 border-top">
                                                                             <button 
                                                                                 className="btn btn-sm btn-success flex-fill"
+                                                                                disabled={actionLoading?.id === req.id}
                                                                                 onClick={async (e) => {
                                                                                     e.stopPropagation();
+                                                                                    setActionLoading({ id: req.id, action: 'APPROVE' });
                                                                                     try {
                                                                                         await api.post(`/api/approvals/${req.id}/messages`, {
-                                                                                            title: 'Manager Approved',
-                                                                                            description: 'Approved by Sales Manager.',
+                                                                                            title: 'Approved',
+                                                                                            description: 'Request Approved.',
                                                                                             action: 'APPROVE'
                                                                                         });
-                                                                                        fetchRequests();
+                                                                                        await fetchRequests();
                                                                                     } catch (err) {
                                                                                         console.error('Failed to approve', err);
                                                                                         alert('Failed to approve: ' + (err.response?.data?.message || err.message));
+                                                                                    } finally {
+                                                                                        setActionLoading(null);
                                                                                     }
                                                                                 }}
                                                                             >
-                                                                                <i className="ti ti-check me-1"></i>Approve
+                                                                                {actionLoading?.id === req.id && actionLoading?.action === 'APPROVE' ? (
+                                                                                    <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                                                                ) : <i className="ti ti-check me-1"></i>}
+                                                                                Approve
                                                                             </button>
                                                                             <button 
                                                                                 className="btn btn-sm btn-danger flex-fill"
+                                                                                disabled={actionLoading?.id === req.id}
                                                                                 onClick={async (e) => {
                                                                                     e.stopPropagation();
+                                                                                    setActionLoading({ id: req.id, action: 'REJECT' });
                                                                                     try {
                                                                                         await api.post(`/api/approvals/${req.id}/messages`, {
-                                                                                            title: 'Manager Rejected',
-                                                                                            description: 'Rejected by Sales Manager.',
+                                                                                            title: 'Rejected',
+                                                                                            description: 'Request Rejected.',
                                                                                             action: 'REJECT'
                                                                                         });
-                                                                                        fetchRequests();
+                                                                                        await fetchRequests();
                                                                                     } catch (err) {
                                                                                         console.error('Failed to reject', err);
                                                                                         alert('Failed to reject: ' + (err.response?.data?.message || err.message));
+                                                                                    } finally {
+                                                                                        setActionLoading(null);
                                                                                     }
                                                                                 }}
                                                                             >
-                                                                                <i className="ti ti-x me-1"></i>Reject
+                                                                                {actionLoading?.id === req.id && actionLoading?.action === 'REJECT' ? (
+                                                                                    <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                                                                ) : <i className="ti ti-x me-1"></i>}
+                                                                                Reject
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
+
+                                                                    {/* Close (Archive) button for resolved requests */}
+                                                                    {['APPROVED', 'REJECTED'].includes((req.status || '').toUpperCase()) && (
+                                                                        <div className="d-flex gap-2 mt-3 pt-3 border-top">
+                                                                            <button 
+                                                                                className="btn btn-sm btn-outline-secondary flex-fill"
+                                                                                disabled={actionLoading?.id === req.id}
+                                                                                onClick={async (e) => {
+                                                                                    e.stopPropagation();
+                                                                                    if (!confirm('Close and archive this request? This cannot be undone.')) return;
+                                                                                    setActionLoading({ id: req.id, action: 'CLOSE' });
+                                                                                    try {
+                                                                                        await api.patch(`/api/approvals/${req.id}/close`);
+                                                                                        await fetchRequests();
+                                                                                    } catch (err) {
+                                                                                        console.error('Failed to close', err);
+                                                                                        alert('Failed to close: ' + (err.response?.data?.message || err.message));
+                                                                                    } finally {
+                                                                                        setActionLoading(null);
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                {actionLoading?.id === req.id && actionLoading?.action === 'CLOSE' ? (
+                                                                                    <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                                                                ) : <i className="ti ti-archive me-1"></i>}
+                                                                                Close & Archive
                                                                             </button>
                                                                         </div>
                                                                     )}
@@ -403,9 +462,10 @@ const Deals = () => {
                             <label className="form-label">Type</label>
                             <select name="type" className="form-select">
                                 <option value="DISCOUNT">Discount</option>
-                                <option value="PAYMENT_PLAN">Payment Plan</option>
-                                <option value="CANCELLATION">Cancellation</option>
-                                <option value="OTHER">Other</option>
+                                <option value="SPECIAL_PRICING">Special Pricing</option>
+                                <option value="BOOKING_CANCELLATION">Cancellation</option>
+                                <option value="REFUND">Refund</option>
+                                <option value="EXPENSE">Expense</option>
                             </select>
                         </div>
                         <div className="mb-3">
@@ -425,7 +485,9 @@ const Deals = () => {
                         </div>
                         <div className="d-flex align-items-center justify-content-end">
                             <button type="button" data-bs-dismiss="offcanvas" className="btn btn-light me-2">Cancel</button>
-                            <button type="submit" className="btn btn-primary">Submit Request</button>
+                            <button type="submit" className="btn btn-primary" disabled={submitLoading}>
+                                {submitLoading ? 'Submitting...' : 'Submit Request'}
+                            </button>
                         </div>
                     </form>
                 </div>

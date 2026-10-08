@@ -1,26 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import api from '../lib/api';
+import { useNavigate } from 'react-router-dom';
 
 const Contacts = () => {
+    const navigate = useNavigate();
     const [leads, setLeads] = useState([]);
     const [loading, setLoading] = useState(true);
+    
+    // Add/Edit Modal State
+    const [showModal, setShowModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [saving, setSaving] = useState(false);
+    
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        source: 'Direct Source'
+    });
+
+    const fetchLeads = async () => {
+        try {
+            setLoading(true);
+            const res = await api.get('/api/leads');
+            const data = res.data?.data || res.data || [];
+            setLeads(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Failed to fetch leads", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchLeads = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get('/api/leads');
-                const data = res.data?.data || res.data || [];
-                setLeads(Array.isArray(data) ? data : []);
-            } catch (error) {
-                console.error("Failed to fetch leads for contacts page", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchLeads();
     }, []);
+
+    const openAddModal = () => {
+        setIsEditing(false);
+        setEditingId(null);
+        setFormData({ firstName: '', lastName: '', phone: '', email: '', source: 'Direct Source' });
+        setShowModal(true);
+    };
+
+    const openEditModal = (lead) => {
+        setIsEditing(true);
+        setEditingId(lead.id);
+        setFormData({
+            firstName: lead.firstName || '',
+            lastName: lead.lastName || '',
+            phone: lead.phone || '',
+            email: lead.email || '',
+            source: lead.source || 'Direct Source'
+        });
+        setShowModal(true);
+    };
+
+    const handleDelete = async (id, name) => {
+        if (confirm(`Are you sure you want to delete ${name}? This cannot be undone.`)) {
+            try {
+                await api.delete(`/api/leads/${id}`);
+                fetchLeads();
+            } catch (err) {
+                console.error("Failed to delete", err);
+                alert("Failed to delete: " + (err.response?.data?.message || err.message));
+            }
+        }
+    };
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            if (isEditing) {
+                await api.patch(`/api/leads/${editingId}`, formData);
+            } else {
+                await api.post('/api/leads', formData);
+            }
+            setShowModal(false);
+            fetchLeads();
+        } catch (err) {
+            console.error("Failed to save", err);
+            alert("Failed to save: " + (err.response?.data?.message || err.message));
+        } finally {
+            setSaving(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -46,6 +113,9 @@ const Contacts = () => {
                     </nav>
                 </div>
                 <div className="gap-2 d-flex align-items-center flex-wrap">
+                    <button className="btn btn-primary shadow-sm" onClick={openAddModal}>
+                        <i className="ti ti-plus me-1"></i>Add Contact
+                    </button>
                     <div className="dropdown">
                         <a href="#" className="dropdown-toggle btn btn-outline-light px-2 shadow"
                             data-bs-toggle="dropdown"><i className="ti ti-package-export me-2"></i>Export</a>
@@ -87,7 +157,10 @@ const Contacts = () => {
                                             <i className="ti ti-dots-vertical"></i>
                                         </a>
                                         <div className="dropdown-menu dropdown-menu-right">
-                                            <a className="dropdown-item" href="/leads"><i className="ti ti-eye text-blue-light"></i> View Lead</a>
+                                            <button className="dropdown-item" onClick={() => navigate(`/clients/${lead.id}`)}><i className="ti ti-eye text-blue-light me-1"></i> View Profile</button>
+                                            <button className="dropdown-item" onClick={() => openEditModal(lead)}><i className="ti ti-edit text-warning me-1"></i> Edit Details</button>
+                                            <div className="dropdown-divider"></div>
+                                            <button className="dropdown-item text-danger" onClick={() => handleDelete(lead.id, lead.firstName)}><i className="ti ti-trash me-1"></i> Delete Contact</button>
                                         </div>
                                     </div>
                                 </div>
@@ -128,7 +201,53 @@ const Contacts = () => {
                 <div className="text-center p-5 bg-white rounded shadow-sm">
                     <h5 className="text-muted">No contacts found</h5>
                     <p className="text-muted mb-0">Start adding leads to see them appear here.</p>
+                    <button className="btn btn-primary mt-3" onClick={openAddModal}><i className="ti ti-plus me-1"></i>Add First Contact</button>
                 </div>
+            )}
+
+            {/* Add/Edit Modal */}
+            {showModal && (
+                <>
+                    <div className="modal-backdrop fade show"></div>
+                    <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                        <div className="modal-dialog modal-dialog-centered">
+                            <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                                <form onSubmit={handleSave}>
+                                    <div className="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                                        <h5 className="modal-title fs-18 fw-bold">{isEditing ? 'Edit Contact' : 'Add New Contact'}</h5>
+                                        <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                                    </div>
+                                    <div className="modal-body px-4 py-4">
+                                        <div className="row g-3">
+                                            <div className="col-md-6">
+                                                <label className="form-label fw-medium text-dark">First Name <span className="text-danger">*</span></label>
+                                                <input required type="text" className="form-control" value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label fw-medium text-dark">Last Name</label>
+                                                <input type="text" className="form-control" value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label fw-medium text-dark">Phone <span className="text-danger">*</span></label>
+                                                <input required type="text" className="form-control" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label fw-medium text-dark">Email</label>
+                                                <input type="email" className="form-control" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer border-top-0 pt-0 px-4 pb-4">
+                                        <button type="button" className="btn btn-light rounded-pill px-4" onClick={() => setShowModal(false)}>Cancel</button>
+                                        <button type="submit" className="btn btn-primary rounded-pill px-4" disabled={saving}>
+                                            {saving ? 'Saving...' : isEditing ? 'Save Changes' : 'Create Contact'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../lib/api';
+import { useNavigate } from 'react-router-dom';
 
 const Pipeline = () => {
+    const navigate = useNavigate();
     const [pipeline, setPipeline] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -150,7 +152,13 @@ const Pipeline = () => {
                                 <div className="row g-4">
                                     {items.map(deal => (
                                         <div className="col-xl-3 col-lg-4 col-md-6" key={deal.id}>
-                                            <div className={`card h-100 shadow-sm border border-${color} border-opacity-25 rounded-4 overflow-hidden position-relative`} style={{ transition: 'all 0.3s ease', cursor: 'pointer', backgroundColor: 'var(--bs-card-bg, #1a1c22)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-5px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                                            <div 
+                                                className={`card h-100 shadow-sm border border-${color} border-opacity-25 rounded-4 overflow-hidden position-relative`} 
+                                                style={{ transition: 'all 0.3s ease', cursor: 'pointer', backgroundColor: 'var(--bs-card-bg, #1a1c22)' }} 
+                                                onMouseOver={e => e.currentTarget.style.transform = 'translateY(-5px)'} 
+                                                onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                                onClick={() => navigate(`/clients/${deal.id}`)}
+                                            >
                                                 {/* Top Accent Line */}
                                                 <div className={`bg-${color}`} style={{ height: '4px', width: '100%', position: 'absolute', top: 0, left: 0 }}></div>
                                                 

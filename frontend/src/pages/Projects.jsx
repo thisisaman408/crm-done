@@ -46,7 +46,7 @@ const Projects = () => {
         const body = {
             name: formData.get('name'),
             builderName: formData.get('builderName'),
-            location: formData.get('location'),
+            address: formData.get('location'),
             city: formData.get('city'),
             description: formData.get('description'),
             status: formData.get('status') || 'ACTIVE',
@@ -154,7 +154,7 @@ const Projects = () => {
                                             <span className={`badge badge-soft-${getStatusColor(project.status)} fs-12`}>
                                                 {project.status || 'ACTIVE'}
                                             </span>
-                                            <span className="badge badge-soft-dark fs-12">
+                                            <span className="badge badge-soft-secondary fs-12">
                                                 {project.type || 'Residential'}
                                             </span>
                                         </div>
@@ -186,9 +186,9 @@ const Projects = () => {
                                     </div>
 
                                     <div className="d-flex flex-column gap-2 mb-3">
-                                        {project.location && (
+                                        {project.address && (
                                             <p className="text-default d-inline-flex align-items-center mb-0 fs-13">
-                                                <i className="ti ti-map-pin text-dark me-2"></i>{project.location}
+                                                <i className="ti ti-map-pin text-dark me-2"></i>{project.address}
                                             </p>
                                         )}
                                         {project.city && (

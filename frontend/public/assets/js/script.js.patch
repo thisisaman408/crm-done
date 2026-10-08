@@ -1,0 +1,47 @@
+--- /Users/thisisaman408/Downloads/crms/app/frontend/public/assets/js/script.js
++++ /Users/thisisaman408/Downloads/crms/app/frontend/public/assets/js/script.js
+@@ -1,13 +1,6 @@
+ $(document).ready(function () {
+ 
+-	// Variables declarations
+-	let wrapper = document.querySelector('.main-wrapper');
+-	const overlay = document.createElement('div');
+-	overlay.className = 'sidebar-overlay';
+-	if (wrapper) {
+-		wrapper.parentNode.insertBefore(overlay, wrapper);
+-	} else {
+-		document.body.appendChild(overlay);
+-	}
++	// Ensure sidebar overlay is dynamically created when needed
++	let overlay = document.querySelector('.sidebar-overlay');
+ 
+ 	// Mobile menu sidebar overlay
+@@ -21,11 +14,19 @@
+ 		if (!e.target.closest('#mobile_btn')) return;
+ 		e.preventDefault();
+ 		const currentWrapper = document.querySelector('.main-wrapper');
+-		if (currentWrapper) currentWrapper.classList.toggle('slide-nav');
+-		overlay.classList.toggle('opened');
++		if (!overlay) {
++			overlay = document.createElement('div');
++			overlay.className = 'sidebar-overlay';
++			if (currentWrapper) {
++				currentWrapper.appendChild(overlay);
++			}
++		}
++		if (currentWrapper) {
++			currentWrapper.classList.toggle('slide-nav');
++			overlay.classList.toggle('opened');
++		}
+ 		document.documentElement.classList.toggle('menu-opened');
+ 	});
+ 
+ 	// Close sidebar on close button click
+ 	document.addEventListener('click', function (e) {
+ 		if (!e.target.closest('.sidebar-close, .sidebar-overlay')) return;
+ 		const currentWrapper = document.querySelector('.main-wrapper');
+ 		if (currentWrapper) currentWrapper.classList.remove('slide-nav');
+-		overlay.classList.remove('opened');
++		if (overlay) overlay.classList.remove('opened');
+ 		document.documentElement.classList.remove('menu-opened');
+ 	});
