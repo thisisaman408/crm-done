@@ -71,7 +71,7 @@ export const EMAIL_NODE_TYPES_META: Record<
     label: 'AI Concierge Autoreply',
     icon: Sparkles,
     color: 'text-purple-600 bg-purple-500/10 border-l-purple-600',
-    desc: 'Groq openai/gpt-oss-120b answers with project details',
+    desc: 'Groq openai/gpt-oss-20b answers with project details',
   },
   condition: {
     label: 'If / Else Branch',

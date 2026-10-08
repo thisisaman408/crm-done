@@ -272,7 +272,7 @@ export class SmsAutomationEngineService {
             break;
           }
 
-          // ── Action: AI Agent Autoreply (Groq openai/gpt-oss-120b) ──
+          // ── Action: AI Agent Autoreply (Groq openai/gpt-oss-20b) ──
           case 'ai_agent':
           case 'ai_reply': {
             const stopIfHumanActive = config.stopIfHumanActive !== false;

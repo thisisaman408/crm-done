@@ -47,7 +47,7 @@ Respond ONLY with JSON, no other text.`;
         { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt },
       ],
-      model: 'openai/gpt-oss-120b',
+      model: 'openai/gpt-oss-20b',
       response_format: { type: 'json_object' },
     });
 

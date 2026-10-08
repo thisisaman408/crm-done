@@ -52,7 +52,7 @@ export class BusinessManagerAnalyticsService {
     // Lead fetching
     const leadsWhere: any = {};
     if (dateFilter) {
-      leadsWhere.createdAt = dateFilter;
+      leadsWhere.updatedAt = dateFilter;
     }
 
     const leads = await this.prisma.lead.findMany({

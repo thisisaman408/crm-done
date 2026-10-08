@@ -96,7 +96,7 @@ export const SMS_FLOW_TEMPLATES: SmsFlowTemplate[] = [
   {
     id: 'autonomous-ai-concierge',
     name: 'Autonomous AI Concierge (Groq LPU)',
-    description: 'Answers incoming prospect questions using Groq openai/gpt-oss-120b in 160 characters or less with project knowledge injection.',
+    description: 'Answers incoming prospect questions using Groq openai/gpt-oss-20b in 160 characters or less with project knowledge injection.',
     badge: 'AI Powered',
     triggerType: 'any_reply',
     triggerConfig: {},
@@ -106,7 +106,7 @@ export const SMS_FLOW_TEMPLATES: SmsFlowTemplate[] = [
         nodeType: 'ai_agent',
         config: {
           provider: 'groq',
-          model: 'openai/gpt-oss-120b',
+          model: 'openai/gpt-oss-20b',
           instructions: 'Greet the buyer by name, answer pricing or amenities succinctly (under 160 chars), and invite them for an on-site sample flat tour.',
           maxTurns: 3,
           stopIfHumanActive: true,

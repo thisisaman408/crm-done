@@ -166,7 +166,7 @@ export function EmailFlowBuilderView({ id }: EmailFlowBuilderViewProps) {
       case 'ai_agent':
         defaultConfig = {
           provider: 'groq',
-          model: 'openai/gpt-oss-120b',
+          model: 'openai/gpt-oss-20b',
           instructions: 'Respond courteously, answering real estate pricing or scheduling questions, and recommend booking an on-site flat tour.',
           maxTurns: 3,
           stopIfHumanActive: true,

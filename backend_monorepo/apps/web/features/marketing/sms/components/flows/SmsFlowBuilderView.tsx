@@ -166,7 +166,7 @@ export function SmsFlowBuilderView({ id }: SmsFlowBuilderViewProps) {
       case 'ai_agent':
         defaultConfig = {
           provider: 'groq',
-          model: 'openai/gpt-oss-120b',
+          model: 'openai/gpt-oss-20b',
           instructions: 'Respond courteously in 160 characters or less, answering property pricing or scheduling queries, and recommend booking an on-site flat tour.',
           maxTurns: 3,
           stopIfHumanActive: true,

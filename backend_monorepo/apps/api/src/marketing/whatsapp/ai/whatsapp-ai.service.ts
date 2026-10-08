@@ -98,7 +98,7 @@ export class WhatsAppAiService {
     const modelToSave =
       !dto.model || dto.model.includes('llama') || dto.model.includes('mixtral')
         ? providerLower === 'groq'
-          ? 'openai/gpt-oss-120b'
+          ? 'openai/gpt-oss-20b'
           : dto.model || 'gpt-4o-mini'
         : dto.model;
 
@@ -195,9 +195,9 @@ export class WhatsAppAiService {
       : null;
 
     let provider = config?.provider || 'groq';
-    let model = config?.model || 'openai/gpt-oss-120b';
+    let model = config?.model || 'openai/gpt-oss-20b';
     if (!model || model.includes('llama') || model.includes('mixtral')) {
-      model = provider === 'groq' ? 'openai/gpt-oss-120b' : 'gpt-4o-mini';
+      model = provider === 'groq' ? 'openai/gpt-oss-20b' : 'gpt-4o-mini';
     }
     let apiKey = '';
 
@@ -223,7 +223,7 @@ export class WhatsAppAiService {
         provider = 'groq';
         apiKey = process.env.GROQ_API_KEY;
         if (!model || model.includes('llama') || model.includes('mixtral')) {
-          model = 'openai/gpt-oss-120b';
+          model = 'openai/gpt-oss-20b';
         }
       } else if (process.env.OPENAI_API_KEY) {
         provider = 'openai';

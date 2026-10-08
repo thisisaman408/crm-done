@@ -29,6 +29,14 @@ export class SalesManagerAnalyticsService {
     return subs.map((s) => s.id);
   }
 
+  async getAllUserIds(): Promise<string[]> {
+    const users = await this.prisma.user.findMany({
+      where: { status: 'ACTIVE' },
+      select: { id: true },
+    });
+    return users.map((u) => u.id);
+  }
+
   async getDetailedMetrics(userIds: string[], timeRange?: string) {
     if (userIds.length === 0) {
       return {
@@ -74,7 +82,7 @@ export class SalesManagerAnalyticsService {
 
     // 1. Sales Funnel & Team Analytics Base Queries
     const assignedCustomersCount = await this.prisma.lead.count({
-      where: { assignedUserId: { in: userIds }, createdAt: dateFilter },
+      where: { assignedUserId: { in: userIds }, ...(dateFilter ? { updatedAt: dateFilter } : {}) },
     });
     const siteVisitsScheduled = await this.prisma.siteVisit.count({
       where: {
@@ -253,7 +261,7 @@ export class SalesManagerAnalyticsService {
     const dateFilter = startDate ? { gte: startDate } : undefined;
 
     const totalLeads = await this.prisma.lead.count({
-      where: { assignedUserId: { in: userIds }, createdAt: dateFilter },
+      where: { assignedUserId: { in: userIds }, ...(dateFilter ? { updatedAt: dateFilter } : {}) },
     });
 
     const siteVisits = await this.prisma.siteVisit.count({
@@ -323,7 +331,7 @@ export class SalesManagerAnalyticsService {
         include: { unit: true },
       });
       const leadsAssigned = await this.prisma.lead.count({
-        where: { assignedUserId: user.id, createdAt: dateFilter },
+        where: { assignedUserId: user.id, ...(dateFilter ? { updatedAt: dateFilter } : {}) },
       });
 
       let revenue = 0;

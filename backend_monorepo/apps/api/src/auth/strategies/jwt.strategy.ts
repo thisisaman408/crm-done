@@ -25,9 +25,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     // Passport attaches this return value to req.user
     return {
+      id: user.id,
       userId: user.id,
       phoneNumber: user.phoneNumber,
       role: user.role?.name,
+      roleCode: user.role?.code,
       department: user.department?.name,
     };
   }

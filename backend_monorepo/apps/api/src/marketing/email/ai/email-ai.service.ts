@@ -1,5 +1,5 @@
 // ============================================================================
-// Resyl — Email AI Assistant & Autoreply Service (Groq openai/gpt-oss-120b)
+// Resyl — Email AI Assistant & Autoreply Service (Groq openai/gpt-oss-20b)
 // ============================================================================
 
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
@@ -48,7 +48,7 @@ export class EmailAiService {
     if (!config) {
       return {
         provider: 'groq',
-        model: 'openai/gpt-oss-120b',
+        model: 'openai/gpt-oss-20b',
         apiKey: null,
         systemPrompt: this.getDefaultSystemPrompt(),
         isActive: true,
@@ -78,13 +78,13 @@ export class EmailAiService {
       encryptedKey = encrypt(dto.apiKey.trim());
     }
 
-    // Default to openai/gpt-oss-120b as requested
+    // Default to openai/gpt-oss-20b as requested
     const selectedModel =
       dto.model && dto.model.trim().length > 0
         ? dto.model.trim()
         : dto.provider === 'openai'
           ? 'gpt-4o-mini'
-          : 'openai/gpt-oss-120b';
+          : 'openai/gpt-oss-20b';
 
     const systemPrompt =
       dto.systemPrompt && dto.systemPrompt.trim().length > 0
@@ -120,7 +120,7 @@ export class EmailAiService {
   }
 
   /**
-   * Generates an intelligent real estate reply using Groq (openai/gpt-oss-120b)
+   * Generates an intelligent real estate reply using Groq (openai/gpt-oss-20b)
    */
   async generateAutoreply(args: EmailAiGenerateReplyArgs): Promise<{
     subject: string;
@@ -133,9 +133,9 @@ export class EmailAiService {
     });
 
     let provider = config?.provider || 'groq';
-    let model = config?.model || 'openai/gpt-oss-120b';
+    let model = config?.model || 'openai/gpt-oss-20b';
     if (!model || model.includes('llama') || model.includes('mixtral')) {
-      model = provider === 'groq' ? 'openai/gpt-oss-120b' : 'gpt-4o-mini';
+      model = provider === 'groq' ? 'openai/gpt-oss-20b' : 'gpt-4o-mini';
     }
     let rawApiKey = '';
 
@@ -153,7 +153,7 @@ export class EmailAiService {
         provider = 'groq';
         rawApiKey = process.env.GROQ_API_KEY;
         if (!model || model.includes('llama') || model.includes('mixtral')) {
-          model = 'openai/gpt-oss-120b';
+          model = 'openai/gpt-oss-20b';
         }
       } else if (process.env.OPENAI_API_KEY) {
         provider = 'openai';

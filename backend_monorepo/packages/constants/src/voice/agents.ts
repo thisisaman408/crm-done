@@ -93,7 +93,7 @@ export const VOICE_LLM_MODELS = [
   { id: 'gpt-4o', name: 'GPT-4o (High Intelligence & Negotiation)', provider: 'OpenAI', badge: 'Smartest' },
   { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet (Nuanced Empathy)', provider: 'Anthropic', badge: 'Nuanced' },
   { id: 'claude-3-haiku-20240307', name: 'Claude 3 Haiku (Fast Turns)', provider: 'Anthropic', badge: 'Low Latency' },
-  { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B (Groq LPU Sub-50ms)', provider: 'Groq', badge: 'Fastest' },
+  { id: 'openai/gpt-oss-20b', name: 'Llama 3.3 70B (Groq LPU Sub-50ms)', provider: 'Groq', badge: 'Fastest' },
   { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Google Multimodal)', provider: 'Google', badge: 'High Context' },
   { id: 'sarvam-2b', name: 'Sarvam 2B (Indic Native LLM)', provider: 'Sarvam AI', badge: 'Indic Native' },
 ] as const;

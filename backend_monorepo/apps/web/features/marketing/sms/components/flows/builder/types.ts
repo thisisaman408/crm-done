@@ -71,7 +71,7 @@ export const SMS_NODE_TYPES_META: Record<
     label: 'Groq AI SMS Concierge',
     icon: Sparkles,
     color: 'text-purple-600 bg-purple-500/10 border-l-purple-600',
-    desc: 'Groq LPU (openai/gpt-oss-120b) generates succinct response (<= 160 chars)',
+    desc: 'Groq LPU (openai/gpt-oss-20b) generates succinct response (<= 160 chars)',
   },
   condition: {
     label: 'If / Else Branch',

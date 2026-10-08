@@ -111,7 +111,7 @@ export const EMAIL_FLOW_TEMPLATES: EmailFlowTemplate[] = [
   {
     id: 'autonomous-ai-concierge',
     name: 'Autonomous AI Concierge (Groq LPU)',
-    description: 'Answers any incoming prospect question using Groq openai/gpt-oss-120b with real-time property knowledge injection.',
+    description: 'Answers any incoming prospect question using Groq openai/gpt-oss-20b with real-time property knowledge injection.',
     badge: 'AI Powered',
     triggerType: 'any_reply',
     triggerConfig: {},
@@ -121,7 +121,7 @@ export const EMAIL_FLOW_TEMPLATES: EmailFlowTemplate[] = [
         nodeType: 'ai_agent',
         config: {
           provider: 'groq',
-          model: 'openai/gpt-oss-120b',
+          model: 'openai/gpt-oss-20b',
           instructions: 'Greet the prospect by name, answer their specific property questions with confidence, and invite them for an on-site visit.',
         },
         positionX: 100,

@@ -89,8 +89,8 @@ export const VAPI_LLM_PROVIDERS: Record<string, VapiLlmProviderInfo> = {
     name: 'Groq LPU',
     badge: 'Ultra-Low Latency (~100ms)',
     models: [
-      { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B Versatile', latencyMs: 120, inputCostPer1M: 0.59, outputCostPer1M: 0.79, contextWindow: '128k', intelligenceTier: 'High', recommended: true },
-      { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B Instant', latencyMs: 80, inputCostPer1M: 0.05, outputCostPer1M: 0.08, contextWindow: '128k', intelligenceTier: 'Medium', recommended: true },
+      { id: 'openai/gpt-oss-20b', name: 'Llama 3.3 70B Versatile', latencyMs: 120, inputCostPer1M: 0.59, outputCostPer1M: 0.79, contextWindow: '128k', intelligenceTier: 'High', recommended: true },
+      { id: 'openai/gpt-oss-20b', name: 'Llama 3.1 8B Instant', latencyMs: 80, inputCostPer1M: 0.05, outputCostPer1M: 0.08, contextWindow: '128k', intelligenceTier: 'Medium', recommended: true },
       { id: 'llama-3.1-405b-reasoning', name: 'Llama 3.1 405B Reasoning', latencyMs: 350, inputCostPer1M: 2.00, outputCostPer1M: 2.00, contextWindow: '128k', intelligenceTier: 'Ultra' },
       { id: 'deepseek-r1-distill-llama-70b', name: 'DeepSeek R1 Distill Llama 70B', latencyMs: 200, inputCostPer1M: 0.75, outputCostPer1M: 0.99, contextWindow: '128k', intelligenceTier: 'Ultra' },
       { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B (32k)', latencyMs: 140, inputCostPer1M: 0.24, outputCostPer1M: 0.24, contextWindow: '32k', intelligenceTier: 'High' },
@@ -151,7 +151,7 @@ export const VAPI_LLM_PROVIDERS: Record<string, VapiLlmProviderInfo> = {
     name: 'Together AI',
     badge: 'High-Throughput Open Source',
     models: [
-      { id: 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo', name: 'Llama 3.1 70B Turbo', latencyMs: 200, inputCostPer1M: 0.88, outputCostPer1M: 0.88, contextWindow: '128k', intelligenceTier: 'High' },
+      { id: 'openai/gpt-oss-20b', name: 'Llama 3.1 70B Turbo', latencyMs: 200, inputCostPer1M: 0.88, outputCostPer1M: 0.88, contextWindow: '128k', intelligenceTier: 'High' },
       { id: 'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo', name: 'Llama 3.1 405B Turbo', latencyMs: 500, inputCostPer1M: 3.50, outputCostPer1M: 3.50, contextWindow: '128k', intelligenceTier: 'Ultra' },
       { id: 'Qwen/Qwen2.5-72B-Instruct-Turbo', name: 'Qwen 2.5 72B Turbo', latencyMs: 220, inputCostPer1M: 1.20, outputCostPer1M: 1.20, contextWindow: '128k', intelligenceTier: 'High' },
     ],

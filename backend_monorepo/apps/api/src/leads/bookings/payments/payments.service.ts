@@ -119,6 +119,21 @@ export class PaymentsService {
     });
   }
 
+  async getAllPayments(userId?: string, roleCode?: string) {
+    return this.prisma.paymentSchedule.findMany({
+      include: {
+        booking: {
+          include: {
+            customer: true,
+            unit: true,
+          }
+        },
+        transactions: true,
+      },
+      orderBy: { dueDate: 'asc' },
+    });
+  }
+
   async getSchedulesByBooking(bookingId: string) {
     return this.prisma.paymentSchedule.findMany({
       where: { bookingId },
@@ -188,5 +203,20 @@ export class PaymentsService {
     });
 
     return { updatedSchedule, transaction };
+  }
+
+  async updateSchedule(id: string, data: { amount?: number; dueDate?: string }) {
+    const updateData: any = {};
+    if (data.amount !== undefined) {
+      updateData.amount = data.amount;
+      updateData.remainingAmount = data.amount;
+    }
+    if (data.dueDate) {
+      updateData.dueDate = new Date(data.dueDate);
+    }
+    return this.prisma.paymentSchedule.update({
+      where: { id },
+      data: updateData,
+    });
   }
 }

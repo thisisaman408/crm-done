@@ -43,6 +43,10 @@ export class CreateBrokerDto {
 
   @IsString()
   @IsOptional()
+  email?: string;
+
+  @IsString()
+  @IsOptional()
   reraNumber?: string;
 
   @IsString()

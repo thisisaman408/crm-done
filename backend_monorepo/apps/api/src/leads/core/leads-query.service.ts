@@ -43,7 +43,8 @@ export class LeadsQueryService {
         date: c.createdAt,
         owner: 'System',
         ownerId: c.lead?.assignedUserId,
-        leadId: c.leadId
+        leadId: c.leadId,
+        notes: (c as any).recordingUrl ? 'Recording available' : 'Call log'
       })),
       ...visits.map(v => ({
         id: v.id,
@@ -53,7 +54,8 @@ export class LeadsQueryService {
         date: v.scheduledDate,
         owner: v.salesExec?.name || 'Unassigned',
         ownerId: v.salesExecId,
-        leadId: v.leadId
+        leadId: v.leadId,
+        notes: v.meetingNotes || ''
       })),
       ...followUps.map(f => ({
         id: f.id,
@@ -63,7 +65,8 @@ export class LeadsQueryService {
         date: f.scheduledDate,
         owner: (f as any).user?.name || (f as any).user?.displayUsername || (f as any).user?.username || 'Unassigned',
         ownerId: f.userId,
-        leadId: f.leadId
+        leadId: f.leadId,
+        notes: f.remarks || ''
       }))
     ];
 
@@ -107,7 +110,7 @@ Output JSON ONLY.`;
       const groq = new Groq({ apiKey: groqApiKey });
       const completion = await groq.chat.completions.create({
         messages: [{ role: 'user', content: prompt }],
-        model: 'openai/gpt-oss-120b',
+        model: 'openai/gpt-oss-20b',
         temperature: 0.2,
       });
 

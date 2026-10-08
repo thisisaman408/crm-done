@@ -1,44 +1,40 @@
-import {
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsEnum,
-  IsNotEmpty,
-} from 'class-validator';
-
-export enum FrequencyEnum {
-  MONTHLY = 'MONTHLY',
-  QUARTERLY = 'QUARTERLY',
-}
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateScheduleDto {
   @IsNumber()
-  @IsNotEmpty()
   netAmount: number;
 
   @IsString()
-  @IsNotEmpty()
   startDate: string;
 
   @IsNumber()
   @IsOptional()
   installmentsCount?: number;
 
-  @IsEnum(FrequencyEnum)
-  @IsOptional()
-  frequency?: 'MONTHLY' | 'QUARTERLY';
-
   @IsNumber()
   @IsOptional()
   percentagePerMonth?: number;
+
+  @IsString()
+  @IsOptional()
+  frequency?: string;
 }
 
 export class MarkAsPaidDto {
   @IsString()
-  @IsNotEmpty()
   amountPaid: string;
 
   @IsString()
   @IsOptional()
   remarks?: string;
+}
+
+export class UpdateScheduleDto {
+  @IsNumber()
+  @IsOptional()
+  amount?: number;
+
+  @IsString()
+  @IsOptional()
+  dueDate?: string;
 }

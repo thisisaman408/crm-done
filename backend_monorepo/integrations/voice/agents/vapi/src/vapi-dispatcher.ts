@@ -82,7 +82,7 @@ export async function dispatchVapiOutboundCall(
     vapiModel = 'claude-3-haiku-20240307';
   } else if (cleanModel.includes('llama') || cleanModel.includes('groq')) {
     vapiModelProvider = 'groq';
-    vapiModel = 'llama-3.3-70b-versatile';
+    vapiModel = 'openai/gpt-oss-20b';
   } else if (cleanModel.includes('gemini')) {
     vapiModelProvider = 'google';
     vapiModel = 'gemini-1.5-flash';

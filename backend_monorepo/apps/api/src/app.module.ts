@@ -15,6 +15,7 @@ import { LeadsModule } from './leads/leads.module.js';
 import { auth } from './lib/auth.js';
 import { MarketingModule } from './marketing/marketing.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
+import { UsersModule } from './users/users.module.js';
 
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -40,6 +41,7 @@ import { AuthGuard } from '@thallesp/nestjs-better-auth';
     NotificationsModule,
     ChatModule,
     MarketingModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,5 +1,5 @@
-import { IsOptional, IsString, IsBoolean, IsArray } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class ProjectQueryDto {
   @IsOptional()
@@ -33,6 +33,18 @@ export class CreateProjectDto {
   @IsOptional()
   @IsString()
   status?: any;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   // Other project fields can be strictly added as needed when expanding the API
 }

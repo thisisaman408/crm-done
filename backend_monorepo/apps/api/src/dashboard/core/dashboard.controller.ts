@@ -117,9 +117,15 @@ export class SalesManagerDashboardController {
   @Get('analytics')
   async getAnalytics(@Req() req: any, @Query('timeRange') timeRange?: string) {
     const userId = req.user?.id;
-    const subs =
-      await this.salesManagerAnalytics.getManagerSubordinates(userId);
-    const userIds = [userId, ...subs];
+    const roleCode = req.user?.roleCode;
+    
+    let userIds: string[] = [];
+    if (roleCode === 'ADMIN' || roleCode === 'DIRECTOR') {
+      userIds = await this.salesManagerAnalytics.getAllUserIds();
+    } else {
+      const subs = await this.salesManagerAnalytics.getManagerSubordinates(userId);
+      userIds = [userId, ...subs].filter(Boolean);
+    }
 
     const [financial, funnel, leaderboard, inventory, detailedMetrics] =
       await Promise.all([

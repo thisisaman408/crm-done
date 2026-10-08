@@ -159,7 +159,7 @@ export class SaveSmsAiConfigDto {
 
   @IsOptional()
   @IsString()
-  model?: string; // default "openai/gpt-oss-120b"
+  model?: string; // default "openai/gpt-oss-20b"
 
   @IsOptional()
   @IsString()

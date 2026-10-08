@@ -30,7 +30,7 @@ interface EmailAiConfigCardProps {
 
 export const EmailAiConfigCard: React.FC<EmailAiConfigCardProps> = ({ projectId }) => {
   const [provider, setProvider] = useState<'groq' | 'openai'>('groq');
-  const [model, setModel] = useState('openai/gpt-oss-120b');
+  const [model, setModel] = useState('openai/gpt-oss-20b');
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState(
@@ -61,7 +61,7 @@ export const EmailAiConfigCard: React.FC<EmailAiConfigCardProps> = ({ projectId 
             const data: EmailAiConfig = JSON.parse(text);
             if (data) {
               setProvider(data.provider || 'groq');
-              setModel(data.model || 'openai/gpt-oss-120b');
+              setModel(data.model || 'openai/gpt-oss-20b');
               setApiKey(data.apiKey || '');
               if (data.systemPrompt) setSystemPrompt(data.systemPrompt);
               setIsActive(data.isActive ?? true);
@@ -164,7 +164,7 @@ export const EmailAiConfigCard: React.FC<EmailAiConfigCardProps> = ({ projectId 
             <div>
               <h3 className="text-base font-semibold text-text-primary">Email AI Concierge Engine</h3>
               <p className="text-xs text-text-tertiary mt-0.5">
-                Powered by Groq high-throughput inference (<code className="px-1 py-0.5 bg-bg-subtle rounded text-purple-600 font-mono text-[11px]">openai/gpt-oss-120b</code>) for sub-second, context-aware 2-way email responses.
+                Powered by Groq high-throughput inference (<code className="px-1 py-0.5 bg-bg-subtle rounded text-purple-600 font-mono text-[11px]">openai/gpt-oss-20b</code>) for sub-second, context-aware 2-way email responses.
               </p>
             </div>
           </div>
@@ -195,7 +195,7 @@ export const EmailAiConfigCard: React.FC<EmailAiConfigCardProps> = ({ projectId 
           <div
             onClick={() => {
               setProvider('groq');
-              setModel('openai/gpt-oss-120b');
+              setModel('openai/gpt-oss-20b');
             }}
             className={`p-4 rounded-xl border cursor-pointer transition-all ${
               provider === 'groq'
@@ -221,7 +221,7 @@ export const EmailAiConfigCard: React.FC<EmailAiConfigCardProps> = ({ projectId 
               Ultra-low latency LPU engine. Evaluates lead emails in ~300ms with deep real estate reasoning.
             </p>
             <div className="text-xs font-mono bg-bg-subtle px-2.5 py-1.5 rounded-lg text-text-primary border border-border-default">
-              Model: openai/gpt-oss-120b
+              Model: openai/gpt-oss-20b
             </div>
           </div>
 

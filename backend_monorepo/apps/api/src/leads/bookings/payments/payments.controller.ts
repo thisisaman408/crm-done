@@ -7,11 +7,12 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  Req,
   BadRequestException,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateScheduleDto, MarkAsPaidDto } from './dto/payment.dto.js';
+import { CreateScheduleDto, MarkAsPaidDto, UpdateScheduleDto } from './dto/payment.dto.js';
 
 @Controller('api/payments')
 export class PaymentsController {
@@ -33,6 +34,11 @@ export class PaymentsController {
   @Get('closing-manager')
   async getPendingPayments(@Query('managerId') managerId: string) {
     return this.paymentsService.getPendingPayments(managerId);
+  }
+
+  @Get()
+  async getAllPayments(@Req() req: { user?: { id: string; roleId: string; roleCode: string } }) {
+    return this.paymentsService.getAllPayments(req.user?.id, req.user?.roleCode);
   }
 
   @Get('booking/:bookingId')
@@ -61,5 +67,10 @@ export class PaymentsController {
       body.remarks,
       file,
     );
+  }
+
+  @Post(':id')
+  async updateSchedule(@Param('id') id: string, @Body() body: UpdateScheduleDto) {
+    return this.paymentsService.updateSchedule(id, body);
   }
 }

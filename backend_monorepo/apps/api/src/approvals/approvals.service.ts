@@ -134,29 +134,34 @@ Remarks: System generated booking request.`;
     });
     const roleCode = user?.role?.code;
 
+    const includeFields = {
+      salesExec: { select: { id: true, name: true, username: true } },
+      manager: { select: { id: true, name: true, username: true } },
+      messages: {
+        take: 1,
+        orderBy: { createdAt: 'desc' as const },
+      },
+    };
+
+    // ADMIN, DIRECTOR, MANAGER can see ALL requests
+    if (['ADMIN', 'DIRECTOR', 'MANAGER'].includes(roleCode || '')) {
+      return this.prisma.approvalRequest.findMany({
+        orderBy: { updatedAt: 'desc' },
+        include: includeFields,
+      });
+    }
+
     if (roleCode === 'SALES_MANAGER') {
       return this.prisma.approvalRequest.findMany({
         where: { managerId: userId },
         orderBy: { updatedAt: 'desc' },
-        include: {
-          salesExec: { select: { id: true, name: true, username: true } },
-          messages: {
-            take: 1, // Get the latest message for preview
-            orderBy: { createdAt: 'desc' },
-          },
-        },
+        include: includeFields,
       });
     } else if (roleCode === 'SALES_EXECUTIVE') {
       return this.prisma.approvalRequest.findMany({
         where: { salesExecId: userId },
         orderBy: { updatedAt: 'desc' },
-        include: {
-          manager: { select: { id: true, name: true, username: true } },
-          messages: {
-            take: 1,
-            orderBy: { createdAt: 'desc' },
-          },
-        },
+        include: includeFields,
       });
     }
 
@@ -211,7 +216,7 @@ Provide a short risk assessment. Return ONLY JSON exactly matching this format (
       const groq = new Groq({ apiKey: groqApiKey });
       const completion = await groq.chat.completions.create({
         messages: [{ role: 'user', content: prompt }],
-        model: 'llama-3.1-8b-instant',
+        model: 'openai/gpt-oss-20b',
         temperature: 0.2
       });
       const response = completion.choices[0]?.message?.content || "";
@@ -276,9 +281,11 @@ Provide a short risk assessment. Return ONLY JSON exactly matching this format (
 
     let newStatus: any = request.status;
 
-    if (roleCode === 'SALES_MANAGER' && data.action === 'APPROVE') {
+    const canApproveReject = ['SALES_MANAGER', 'ADMIN', 'DIRECTOR', 'MANAGER'].includes(roleCode || '');
+
+    if (canApproveReject && data.action === 'APPROVE') {
       newStatus = 'APPROVED';
-    } else if (roleCode === 'SALES_MANAGER' && data.action === 'REJECT') {
+    } else if (canApproveReject && data.action === 'REJECT') {
       newStatus = 'REJECTED';
     } else if (roleCode === 'SALES_EXECUTIVE') {
       newStatus = 'REQUESTED'; // SE pushing back
@@ -346,7 +353,7 @@ Provide a short risk assessment. Return ONLY JSON exactly matching this format (
       }
     }
 
-    if (roleCode === 'SALES_MANAGER') {
+    if (canApproveReject) {
       let type: NotificationType = NotificationType.CHAT_MESSAGE;
       let title = 'New message on your request.';
 
@@ -362,12 +369,12 @@ Provide a short risk assessment. Return ONLY JSON exactly matching this format (
         userId: request.salesExecId,
         type: type,
         title: title,
-        body: `${updated.manager?.name || 'Your manager'} responded to your request.`,
+        body: `${updated.manager?.name || user?.name || 'Management'} responded to your request.`,
         actionUrl: `/dashboard/sales-executive/approval`,
         metadata: {
           approvalId: request.id,
           status: newStatus,
-          managerName: updated.manager?.name,
+          managerName: updated.manager?.name || user?.name,
         },
       });
     } else if (roleCode === 'SALES_EXECUTIVE') {

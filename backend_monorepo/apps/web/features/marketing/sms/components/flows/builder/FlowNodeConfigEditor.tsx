@@ -163,7 +163,7 @@ export const FlowNodeConfigEditor: React.FC<FlowNodeConfigEditorProps> = ({
         <div className="p-3 bg-purple-50/50 border border-purple-200/80 rounded-xl space-y-3 text-xs">
           <div className="flex items-center gap-2 text-purple-900 font-bold">
             <Sparkles className="w-4 h-4 text-purple-600" />
-            <span>Groq LPU AI Concierge (openai/gpt-oss-120b)</span>
+            <span>Groq LPU AI Concierge (openai/gpt-oss-20b)</span>
           </div>
           <p className="text-[11px] text-purple-700/90 font-medium">
             AI automatically analyzes the inbound SMS text, consults the project brochure details, and replies succinctly in 160 characters or less.

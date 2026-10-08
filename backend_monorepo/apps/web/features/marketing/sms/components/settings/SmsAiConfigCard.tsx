@@ -4,31 +4,31 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  Sparkles,
-  CheckCircle2,
-  AlertCircle,
-  Key,
-  Bot,
-  Loader2,
-  Send,
-  Eye,
-  EyeOff,
-  ShieldCheck,
-  Zap,
-  MessageSquare,
-  Hash,
-} from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Badge } from "@/components/ui/Badge";
-import { toast } from "sonner";
 import { calculateSmsSegments } from "@resyl/constants";
+import {
+  AlertCircle,
+  Bot,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Hash,
+  Key,
+  Loader2,
+  MessageSquare,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const SmsAiConfigCard: React.FC = () => {
   const [provider, setProvider] = useState<"groq" | "openai">("groq");
-  const [model, setModel] = useState("openai/gpt-oss-120b");
+  const [model, setModel] = useState("openai/gpt-oss-20b");
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState(
@@ -64,7 +64,7 @@ export const SmsAiConfigCard: React.FC = () => {
           const data = await res.json();
           if (data) {
             setProvider(data.provider || "groq");
-            setModel(data.model || "openai/gpt-oss-120b");
+            setModel(data.model || "openai/gpt-oss-20b");
             setApiKey(data.apiKey || "");
             if (data.systemPrompt) setSystemPrompt(data.systemPrompt);
             setIsActive(data.isActive ?? true);
@@ -202,7 +202,7 @@ export const SmsAiConfigCard: React.FC = () => {
               onChange={(e) => {
                 const val = e.target.value as "groq" | "openai";
                 setProvider(val);
-                setModel(val === "openai" ? "gpt-4o-mini" : "openai/gpt-oss-120b");
+                setModel(val === "openai" ? "gpt-4o-mini" : "openai/gpt-oss-20b");
               }}
               className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-purple-500 bg-white"
             >
@@ -220,8 +220,8 @@ export const SmsAiConfigCard: React.FC = () => {
             >
               {provider === "groq" ? (
                 <>
-                  <option value="openai/gpt-oss-120b">openai/gpt-oss-120b (Recommended — Instant LPU)</option>
-                  <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Conversational Precision)</option>
+                  <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Recommended — Instant LPU)</option>
+                  <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Conversational Precision)</option>
                   <option value="mixtral-8x7b-32768">mixtral-8x7b-32768 (High Context)</option>
                 </>
               ) : (

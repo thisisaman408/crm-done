@@ -1,5 +1,5 @@
 // ============================================================================
-// Resyl — SMS AI Assistant & Autoreply Service (Groq openai/gpt-oss-120b)
+// Resyl — SMS AI Assistant & Autoreply Service (Groq openai/gpt-oss-20b)
 // ============================================================================
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -41,7 +41,7 @@ export class SmsAiService {
     if (!config) {
       return {
         provider: 'groq',
-        model: 'openai/gpt-oss-120b',
+        model: 'openai/gpt-oss-20b',
         apiKey: null,
         systemPrompt: this.getDefaultSystemPrompt(),
         isActive: true,
@@ -77,7 +77,7 @@ export class SmsAiService {
         ? dto.model.trim()
         : dto.provider === 'openai'
           ? 'gpt-4o-mini'
-          : 'openai/gpt-oss-120b';
+          : 'openai/gpt-oss-20b';
 
     const systemPrompt =
       dto.systemPrompt && dto.systemPrompt.trim().length > 0
@@ -141,9 +141,9 @@ export class SmsAiService {
     }
 
     const provider = config?.provider || 'groq';
-    let model = config?.model || 'openai/gpt-oss-120b';
+    let model = config?.model || 'openai/gpt-oss-20b';
     if (!model || model.includes('llama') || model.includes('mixtral')) {
-      model = provider === 'groq' ? 'openai/gpt-oss-120b' : 'gpt-4o-mini';
+      model = provider === 'groq' ? 'openai/gpt-oss-20b' : 'gpt-4o-mini';
     }
     const maxChars = config?.maxCharacters || 160;
 

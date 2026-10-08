@@ -184,7 +184,7 @@ export const BranchStepsList: React.FC<BranchStepsListProps> = ({
                       <div className="space-y-2">
                         <div className="p-2 bg-purple-500/10 rounded-lg text-[11px] text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
                           <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                          <span>Autonomous AI Concierge (Groq openai/gpt-oss-120b)</span>
+                          <span>Autonomous AI Concierge (Groq openai/gpt-oss-20b)</span>
                         </div>
                         <div>
                           <label className="text-[11px] font-semibold text-text-secondary block mb-1">

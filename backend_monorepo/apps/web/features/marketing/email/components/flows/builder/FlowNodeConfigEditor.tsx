@@ -42,7 +42,7 @@ function getDefaultBranchStepConfig(
     case 'ai_agent':
       return {
         provider: 'groq',
-        model: 'openai/gpt-oss-120b',
+        model: 'openai/gpt-oss-20b',
         instructions: 'Answer pricing or scheduling queries and recommend booking an on-site flat tour.',
         maxTurns: 3,
         stopIfHumanActive: true,
@@ -167,7 +167,7 @@ export const FlowNodeConfigEditor: React.FC<FlowNodeConfigEditorProps> = ({
           <div className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-xl text-xs text-purple-700 dark:text-purple-400 flex items-start gap-2">
             <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-purple-600" />
             <div className="space-y-1">
-              <p className="font-semibold">Autonomous Real Estate AI (Groq openai/gpt-oss-120b)</p>
+              <p className="font-semibold">Autonomous Real Estate AI (Groq openai/gpt-oss-20b)</p>
               <p className="text-[11px] opacity-90">
                 Dynamically injects project highlights, brochures, starting prices, and personalized site visit invitations into the reply.
               </p>

@@ -21,7 +21,7 @@ export const WhatsAppAiConfigCard: React.FC<WhatsAppAiConfigCardProps> = ({
   accountId,
 }) => {
   const [provider, setProvider] = useState('groq');
-  const [model, setModel] = useState('openai/gpt-oss-120b');
+  const [model, setModel] = useState('openai/gpt-oss-20b');
   const [apiKey, setApiKey] = useState('');
   const [systemPrompt, setSystemPrompt] = useState(
     'You are an elite real estate sales advisor and concierge for an enterprise brokerage.\nYour role is to assist the client courteously, provide crisp property insights, answer pricing and schedule visit queries, and encourage booking a site visit.',
@@ -76,7 +76,7 @@ export const WhatsAppAiConfigCard: React.FC<WhatsAppAiConfigCardProps> = ({
             const data: WhatsAppAiConfig = JSON.parse(text);
             if (data) {
               setProvider(data.provider || 'groq');
-              setModel(data.model || 'openai/gpt-oss-120b');
+              setModel(data.model || 'openai/gpt-oss-20b');
               setApiKey(data.apiKey || '');
               if (data.systemPrompt) setSystemPrompt(data.systemPrompt);
               setIsActive(data.isActive);
@@ -188,7 +188,7 @@ export const WhatsAppAiConfigCard: React.FC<WhatsAppAiConfigCardProps> = ({
               onChange={(e) => {
                 const p = e.target.value;
                 setProvider(p);
-                if (p === 'groq') setModel('openai/gpt-oss-120b');
+                if (p === 'groq') setModel('openai/gpt-oss-20b');
                 else if (p === 'openai') setModel('gpt-4o-mini');
               }}
               className="w-full px-3.5 py-2 bg-bg-base border border-border-default rounded-xl text-xs text-text-primary focus:outline-hidden focus:border-purple-500"
@@ -205,7 +205,7 @@ export const WhatsAppAiConfigCard: React.FC<WhatsAppAiConfigCardProps> = ({
               </label>
               {provider === 'groq' && (
                 <span className="text-[10px] text-purple-600 dark:text-purple-400 font-medium">
-                  Active: openai/gpt-oss-120b
+                  Active: openai/gpt-oss-20b
                 </span>
               )}
             </div>
@@ -214,12 +214,12 @@ export const WhatsAppAiConfigCard: React.FC<WhatsAppAiConfigCardProps> = ({
               list="groq-models"
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              placeholder={provider === 'groq' ? 'openai/gpt-oss-120b' : 'gpt-4o-mini'}
+              placeholder={provider === 'groq' ? 'openai/gpt-oss-20b' : 'gpt-4o-mini'}
               className="w-full px-3.5 py-2 bg-bg-base border border-border-default rounded-xl text-xs text-text-primary font-mono focus:outline-hidden focus:border-purple-500"
             />
             {provider === 'groq' && (
               <datalist id="groq-models">
-                <option value="openai/gpt-oss-120b">openai/gpt-oss-120b (Flagship Reasoning & Sales Drafts)</option>
+                <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Flagship Reasoning & Sales Drafts)</option>
                 <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Ultra-Fast Instant Replies)</option>
                 <option value="qwen/qwen3.8-27b">qwen/qwen3.8-27b (High Performance)</option>
               </datalist>

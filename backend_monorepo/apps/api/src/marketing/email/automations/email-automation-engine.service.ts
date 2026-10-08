@@ -308,7 +308,7 @@ export class EmailAutomationEngineService {
             break;
           }
 
-          // ── Action: AI Agent Autoreply (Groq openai/gpt-oss-120b) ──
+          // ── Action: AI Agent Autoreply (Groq openai/gpt-oss-20b) ──
           case 'ai_agent':
           case 'ai_reply': {
             const stopIfHumanActive = config.stopIfHumanActive !== false;
@@ -350,7 +350,7 @@ export class EmailAutomationEngineService {
               });
               actionsExecuted.push(`AI Concierge generated & dispatched reply: "${aiReply.subject}"`);
             } else {
-              actionsExecuted.push(`AI Concierge (Groq openai/gpt-oss-120b) generated reply: "${aiReply.subject}"`);
+              actionsExecuted.push(`AI Concierge (Groq openai/gpt-oss-20b) generated reply: "${aiReply.subject}"`);
             }
 
             outboundReplyText = aiReply.textBody;
